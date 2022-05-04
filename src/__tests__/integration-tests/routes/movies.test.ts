@@ -1,41 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import supertest from "supertest";
-import { MovieInt } from "../../../interfaces/MovieInt";
-import { Movie } from "../../../models/movie";
+import model from "../../../models/movie";
 import { app } from "../../../server";
+import { Movies } from "../../../types";
 
 const request = supertest(app);
 
 describe("Route /api/movies", () => {
-	let movie1: MovieInt;
-	let movie2: MovieInt;
+	let movie1: Movies;
+	let movie2: Movies;
 
-	afterEach(async () => await Movie.deleteMany({}));
+	afterEach(async () => await model.Movie.deleteMany({}));
 	beforeEach(async () => {
 		movie1 = {
+			id: 0,
 			title: "Avengers",
-			genre: { name: "Action" },
-			numberInStock: 2,
-			dailyRentalRate: 2.5,
-			voteAverage: 1,
-			category: "popular",
-			overview: "",
-			dateRelease: "",
-			url: "",
 		};
 		movie2 = {
+			id: 1,
 			title: "Fast & Furious",
-			genre: { name: "Action" },
-			numberInStock: 3,
-			dailyRentalRate: 3.5,
-			voteAverage: 1,
-			category: "popular",
-			overview: "",
-			dateRelease: "",
-			url: "",
 		};
 
-		await Movie.insertMany([movie1, movie2]);
+		await model.Movie.insertMany([movie1, movie2]);
 	});
 
 	/**
@@ -66,7 +52,7 @@ describe("Route /api/movies", () => {
 		let id: string;
 
 		beforeEach(async () => {
-			const { _id } = await Movie.create(movie1);
+			const { _id } = await model.Movie.create(movie1);
 			id = _id!.toHexString();
 		});
 		const exec = () => request.get(`/api/movies/${id}`);

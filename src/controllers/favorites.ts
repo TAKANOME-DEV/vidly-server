@@ -1,39 +1,39 @@
 import { Request, Response } from "express";
-import { getToken, verifyToken } from "../helpers/auth";
-import { FavoriteReqInt } from "../interfaces/FavoriteInt";
-import { JwtPayloadInt } from "../interfaces/JwtPayloadInt";
-import { ParamsInt } from "../interfaces/ParamsInt";
+import helpers from "../helpers/auth";
 import { asyncMiddleware } from "../middleware/async";
-import { Favorite } from "../models/favorite";
-import { Movie } from "../models/movie";
-import { User } from "../models/user";
+import favoriteModel from "../models/favorite";
+import userModel from "../models/user";
+import * as types from "../types";
 
-export const handleGetFavorites = asyncMiddleware(
-	async (req: Request, res: Response) => {
-		const token = getToken(req);
-		const decoded = verifyToken(token as string) as JwtPayloadInt;
-		const favorites = await Favorite.findOne({
-			"user._id": decoded._id,
-		});
-		return res.json(favorites);
-	}
-);
+const getFavorites = asyncMiddleware(async (req: Request, res: Response) => {
+	const token = helpers.getToken(req);
+	const decoded = helpers.verifyToken(token as string) as types.JwtPayload;
+	const favorites = await favoriteModel.Favorite.findOne({
+		"user._id": decoded._id,
+	});
+	return res.json(favorites);
+});
 
-export const handlePostFavorite = asyncMiddleware(
-	async (req: Request<unknown, unknown, FavoriteReqInt>, res: Response) => {
+const postFavorite = asyncMiddleware(
+	async (
+		req: Request<unknown, unknown, types.FavoriteRequest>,
+		res: Response
+	) => {
 		const { userId, movieId } = req.body;
-		const user = await User.findById(userId);
+		const user = await userModel.User.findById(userId);
 		if (!user) return res.status(400).json("User not found");
-		const movie = await Movie.findById(movieId);
-		if (!movie) return res.status(400).json("Movie not found");
+		// const movie = await Movie.findById(movieId);
+		// if (!movie) return res.status(400).json("Movie not found");
 
-		const userInFav = await Favorite.findOne({ "user._id": userId });
+		const userInFav = await favoriteModel.Favorite.findOne({
+			"user._id": userId,
+		});
 
 		if (userInFav) {
 			userInFav.favorites.push({ movieId });
 			await userInFav.save();
 		} else {
-			await Favorite.create({
+			await favoriteModel.Favorite.create({
 				user: {
 					_id: user?._id,
 					name: user?.name,
@@ -46,13 +46,13 @@ export const handlePostFavorite = asyncMiddleware(
 	}
 );
 
-export const handleDeleteFavorite = asyncMiddleware(
-	async (req: Request<ParamsInt>, res: Response) => {
-		const token = getToken(req);
-		const user = verifyToken(token as string) as JwtPayloadInt;
+const deleteFavorite = asyncMiddleware(
+	async (req: Request<types.RequestParams>, res: Response) => {
+		const token = helpers.getToken(req);
+		const user = helpers.verifyToken(token as string) as types.JwtPayload;
 		const { movieId } = req.params;
 
-		await Favorite.findOneAndUpdate(
+		await favoriteModel.Favorite.findOneAndUpdate(
 			{
 				"user._id": user._id,
 			},
@@ -65,10 +65,15 @@ export const handleDeleteFavorite = asyncMiddleware(
 	}
 );
 
-export const handleDeleteFavorites = asyncMiddleware(
-	async (req: Request, res: Response) => {
-		const { userId } = req.params;
-		await Favorite.deleteOne({ "user._id": userId });
-		return res.json("Movies removed from favorites");
-	}
-);
+const deleteFavorites = asyncMiddleware(async (req: Request, res: Response) => {
+	const { userId } = req.params;
+	await favoriteModel.Favorite.deleteOne({ "user._id": userId });
+	return res.json("Movies removed from favorites");
+});
+
+export default {
+	getFavorites,
+	postFavorite,
+	deleteFavorite,
+	deleteFavorites,
+};

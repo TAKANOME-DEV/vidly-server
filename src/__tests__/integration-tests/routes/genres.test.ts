@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import supertest from "supertest";
-import { generateAuthToken } from "../../../helpers/auth";
-import { GenreInt } from "../../../interfaces/GenreInt";
-import { Genre } from "../../../models/genre";
-import { User } from "../../../models/user";
+import helpers from "../../../helpers/auth";
+import genreModel from "../../../models/genre";
+import userModel from "../../../models/user";
 import { app } from "../../../server";
+import { Genre } from "../../../types";
 
 const request = supertest(app);
 
 describe("Route /api/genres", () => {
-	afterEach(async () => await Genre.deleteMany({}));
+	afterEach(async () => await genreModel.Genre.deleteMany({}));
 
 	/**
 	 * @route /api/genre
@@ -21,8 +21,8 @@ describe("Route /api/genres", () => {
 
 	describe("GET /", () => {
 		it("should return all the genres", async () => {
-			const genres: GenreInt[] = [{ name: "Genre1" }, { name: "Genre2" }];
-			await Genre.create(genres);
+			const genres: Genre[] = [{ name: "Genre1" }, { name: "Genre2" }];
+			await genreModel.Genre.create(genres);
 			const res = await request.get("/api/genres");
 			expect(res.status).toBe(200);
 			expect(res.body).toHaveLength(2);
@@ -42,8 +42,8 @@ describe("Route /api/genres", () => {
 		let id: string;
 
 		beforeEach(async () => {
-			const { _id } = await Genre.create({ name: "Genre3" });
-			id = _id!.toHexString();
+			const { _id } = await genreModel.Genre.create({ name: "Genre3" });
+			id = _id.toHexString();
 		});
 
 		const exec = () => request.get(`/api/genres/${id}`);
@@ -89,7 +89,7 @@ describe("Route /api/genres", () => {
 			request.post("/api/genres").set("X-Auth-Token", token).send({ name });
 
 		beforeEach(() => {
-			token = generateAuthToken(new User({ isAdmin: true }));
+			token = helpers.generateAuthToken(new userModel.User({ isAdmin: true }));
 			name = "Test Genre";
 		});
 
@@ -101,7 +101,7 @@ describe("Route /api/genres", () => {
 		});
 
 		it("should return 403 user is not admin", async () => {
-			token = generateAuthToken(new User());
+			token = helpers.generateAuthToken(new userModel.User());
 			const res = await exec();
 			expect(res.status).toBe(403);
 			expect(res.body).toMatch(/access denied/i);
@@ -123,7 +123,7 @@ describe("Route /api/genres", () => {
 
 		it("should save genre if it is valid", async () => {
 			const res = await exec();
-			const genre = await Genre.findById(res.body._id);
+			const genre = await genreModel.Genre.findById(res.body._id);
 			expect(genre).not.toBeNull();
 		});
 
@@ -140,10 +140,10 @@ describe("Route /api/genres", () => {
 		let name: string;
 
 		beforeEach(async () => {
-			token = generateAuthToken(new User({ isAdmin: true }));
+			token = helpers.generateAuthToken(new userModel.User({ isAdmin: true }));
 			name = "Test genre";
-			const { _id } = await Genre.create({ name });
-			id = _id!.toHexString();
+			const { _id } = await genreModel.Genre.create({ name });
+			id = _id.toHexString();
 		});
 
 		/**
@@ -181,7 +181,7 @@ describe("Route /api/genres", () => {
 			});
 
 			it("should return 403 if user is not admin", async () => {
-				token = generateAuthToken(new User());
+				token = helpers.generateAuthToken(new userModel.User());
 				const res = await exec();
 				expect(res.status).toBe(403);
 				expect(res.body).toMatch(/access denied/i);
@@ -203,7 +203,7 @@ describe("Route /api/genres", () => {
 
 			it("should update genre if it is valid", async () => {
 				const res = await exec();
-				const updatedGenre = await Genre.findById(res.body._id);
+				const updatedGenre = await genreModel.Genre.findById(res.body._id);
 				expect(updatedGenre).not.toBeNull();
 			});
 
@@ -248,7 +248,7 @@ describe("Route /api/genres", () => {
 			});
 
 			it("should return 403 if user is not admin", async () => {
-				token = generateAuthToken(new User());
+				token = helpers.generateAuthToken(new userModel.User());
 				const res = await exec();
 				expect(res.status).toBe(403);
 				expect(res.body).toMatch(/access denied/i);
@@ -263,7 +263,7 @@ describe("Route /api/genres", () => {
 
 			it("should return null if genre is deleted", async () => {
 				const res = await exec();
-				const genre = await Genre.findById(res.body._id);
+				const genre = await genreModel.Genre.findById(res.body._id);
 				expect(genre).toBeNull();
 			});
 

@@ -1,10 +1,10 @@
 // import dataUri from "datauri";
 import mongoose from "mongoose";
 import supertest from "supertest";
-import { generateAuthToken } from "../../../helpers/auth";
-import { UserInt } from "../../../interfaces/UserInt";
-import { User } from "../../../models/user";
+import helpers from "../../../helpers/auth";
+import model from "../../../models/user";
 import { app } from "../../../server";
+import { User } from "../../../types";
 
 // const imagePath = `${__dirname}/../../../assets/images/nodejs.png`;
 // const gifPath = `${__dirname}/nodejs.gif`;
@@ -12,7 +12,7 @@ const request = supertest(app);
 
 describe("Route /api/profile", () => {
 	let token: string;
-	let user: Omit<UserInt, "password">;
+	let user: Omit<User, "password">;
 	// let image: string;
 
 	beforeEach(() => {
@@ -22,7 +22,7 @@ describe("Route /api/profile", () => {
 			email: "user11@gmail.com",
 			hash: "user11_hash",
 		};
-		token = generateAuthToken(new User(user));
+		token = helpers.generateAuthToken(new model.User(user));
 		// image = (await dataUri(imagePath)) as string;
 	});
 	const exec = () => request.post("/api/profile").set("X-Auth-Token", token);

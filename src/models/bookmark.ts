@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
-import { BookmarkInt } from "../interfaces/BookmarkInt";
+import * as types from "../types";
 
-export const Bookmark = model<BookmarkInt>(
+const Bookmark = model<types.Bookmark>(
 	"Bookmark",
-	new Schema<BookmarkInt>({
+	new Schema<types.Bookmark>({
 		user: {
 			type: new Schema({
 				name: {
@@ -28,3 +28,7 @@ export const Bookmark = model<BookmarkInt>(
 		},
 	})
 );
+
+export default {
+	Bookmark,
+};

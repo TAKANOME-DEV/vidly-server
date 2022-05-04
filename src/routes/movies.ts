@@ -1,29 +1,13 @@
 import express from "express";
-import {
-	// handleCreateMovie,
-	// handleDeleteMovie,
-	handleGetMovie,
-	handleGetMovies,
-} from "../controllers/movies";
-// import { validateMovie } from "../models/movie";
-import { validateId } from "../middleware/validateId";
-// import { requireAdmin } from "../middleware/auth";
-// import { requireAdmin, requireAuth } from "../middleware/auth";
-// import { validateRequest } from "../middleware/validateRequest";
+import controller from "../controllers/movies";
 
 const router = express.Router();
-router.route("/").get(handleGetMovies);
-router.get("/:id", validateId, handleGetMovie);
-// router.post(
-//   "/",
-//   [requireAuth, validateRequest(validateMovie)],
-//   handleCreateMovie
-// );
-// router.put(
-//   "/:id",
-//   [validateId, requireAuth, validateRequest(validateMovie)],
-//   handleUpdateMovie
-// );
-// router.delete("/:id", [validateId, requireAdmin], handleDeleteMovie);
+
+router.route("/:page").get(controller.getMovies);
+router.route("/trending/:page").get(controller.getTrendingMovies);
+router.route("/popular/:page").get(controller.getPopularMovies);
+router.route("/similar/:id").get(controller.getSimilarMovies);
+router.route("/videos/:id").get(controller.getMovieVideos);
+router.route("/movie/:id").get(controller.getMovieById);
 
 export { router as movies };

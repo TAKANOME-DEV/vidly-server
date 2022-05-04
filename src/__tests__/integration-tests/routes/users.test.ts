@@ -1,21 +1,16 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import supertest from "supertest";
-import {
-	generateAuthToken,
-	validateHash,
-	verifyToken,
-} from "../../../helpers/auth";
-import { JwtPayloadInt } from "../../../interfaces/JwtPayloadInt";
-import { UpdatePasswordInt, UserInt } from "../../../interfaces/UserInt";
-import { User } from "../../../models/user";
+import helpers from "../../../helpers/auth";
+import model from "../../../models/user";
 import { app } from "../../../server";
+import { JwtPayload, UpdatePassword, User } from "../../../types";
 
 const request = supertest(app);
 
 describe("Route /api/users", () => {
-	let user3: UserInt;
-	let user4: UserInt;
+	let user3: User;
+	let user4: User;
 
 	beforeEach(() => {
 		user3 = {
@@ -43,8 +38,8 @@ describe("Route /api/users", () => {
 
 	describe("GET /", () => {
 		let token: string;
-		afterEach(async () => await User.deleteMany({}));
-		beforeEach(() => (token = generateAuthToken(new User())));
+		afterEach(async () => await model.User.deleteMany({}));
+		beforeEach(() => (token = helpers.generateAuthToken(new model.User())));
 
 		const exec = () => request.get("/api/users").set("X-Auth-Token", token);
 
@@ -62,8 +57,8 @@ describe("Route /api/users", () => {
 		});
 
 		it("should return all users", async () => {
-			token = generateAuthToken(new User({ isAdmin: true }));
-			await User.insertMany([user3, user4]);
+			token = helpers.generateAuthToken(new model.User({ isAdmin: true }));
+			await model.User.insertMany([user3, user4]);
 			const res = await exec();
 			expect(res.status).toBe(200);
 			expect(res.body.length).toBe(2);
@@ -85,11 +80,11 @@ describe("Route /api/users", () => {
 		let token: string;
 
 		beforeEach(async () => {
-			const { _id } = await User.create(user3);
+			const { _id } = await model.User.create(user3);
 			id = _id!.toHexString();
-			token = generateAuthToken(new User());
+			token = helpers.generateAuthToken(new model.User());
 		});
-		afterEach(async () => await User.deleteMany({}));
+		afterEach(async () => await model.User.deleteMany({}));
 
 		const exec = () =>
 			request.get(`/api/users/${id}`).set("X-Auth-Token", token);
@@ -115,7 +110,7 @@ describe("Route /api/users", () => {
 		});
 
 		it("should return 404 if user is not found", async () => {
-			token = generateAuthToken(new User({ isAdmin: true }));
+			token = helpers.generateAuthToken(new model.User({ isAdmin: true }));
 			id = "61dd6dd371aa041cf91f7363";
 			const res = await exec();
 			expect(res.status).toBe(404);
@@ -123,7 +118,7 @@ describe("Route /api/users", () => {
 		});
 
 		it("should return user if ID is valid", async () => {
-			token = generateAuthToken(new User({ isAdmin: true }));
+			token = helpers.generateAuthToken(new model.User({ isAdmin: true }));
 			const res = await exec();
 			expect(res.status).toBe(200);
 			expect(res.body).toHaveProperty("name", user3.name);
@@ -142,10 +137,10 @@ describe("Route /api/users", () => {
 	 */
 
 	describe("POST /", () => {
-		let user7: Omit<UserInt, "password">;
-		let user8: UserInt;
+		let user7: Omit<User, "password">;
+		let user8: User;
 
-		afterEach(async () => await User.deleteMany({}));
+		afterEach(async () => await model.User.deleteMany({}));
 		beforeEach(async () => {
 			user7 = {
 				name: "User7",
@@ -158,7 +153,7 @@ describe("Route /api/users", () => {
 				password: "87654321",
 			};
 
-			await User.create(user7);
+			await model.User.create(user7);
 		});
 
 		const exec = () => request.post("/api/users").send(user8);
@@ -186,14 +181,20 @@ describe("Route /api/users", () => {
 
 		it("should save user if valid", async () => {
 			await exec();
-			const user = await User.findOne({ name: user8.name, email: user8.email });
+			const user = await model.User.findOne({
+				name: user8.name,
+				email: user8.email,
+			});
 			expect(user).not.toBeNull();
 		});
 
 		it("should return token if valid", async () => {
 			const res = await exec();
-			const user = await User.findOne({ name: user8.name, email: user8.email });
-			const decoded = verifyToken(res.body as string) as JwtPayloadInt;
+			const user = await model.User.findOne({
+				name: user8.name,
+				email: user8.email,
+			});
+			const decoded = helpers.verifyToken(res.body as string) as JwtPayload;
 			const isValid = decoded?._id === user?._id?.toHexString();
 			expect(res.status).toBe(200);
 			expect(isValid).toBe(true);
@@ -210,12 +211,12 @@ describe("Route /api/users", () => {
 	 */
 
 	describe("PUT /:id", () => {
-		let user8: Omit<UserInt, "password">;
-		let user88: Omit<UserInt, "password">;
+		let user8: Omit<User, "password">;
+		let user88: Omit<User, "password">;
 		let token: string;
 		let id: string;
 
-		afterEach(async () => await User.deleteMany({}));
+		afterEach(async () => await model.User.deleteMany({}));
 		beforeEach(async () => {
 			user8 = {
 				name: "User8",
@@ -226,8 +227,8 @@ describe("Route /api/users", () => {
 				name: "User88",
 				email: "user88@gmail.com",
 			};
-			token = generateAuthToken(new User());
-			const { _id } = await User.create(user8);
+			token = helpers.generateAuthToken(new model.User());
+			const { _id } = await model.User.create(user8);
 			id = _id!.toHexString();
 		});
 
@@ -250,7 +251,7 @@ describe("Route /api/users", () => {
 
 		it("should update user if valid", async () => {
 			await exec();
-			const user = await User.findOne({
+			const user = await model.User.findOne({
 				name: user88.name,
 				email: user88.email,
 			});
@@ -259,11 +260,11 @@ describe("Route /api/users", () => {
 
 		it("should return token if user valid", async () => {
 			const res = await exec();
-			const user = await User.findOne({
+			const user = await model.User.findOne({
 				name: user88.name,
 				email: user88.email,
 			});
-			const decoded = verifyToken(res.body as string) as JwtPayloadInt;
+			const decoded = helpers.verifyToken(res.body as string) as JwtPayload;
 			const isValid = decoded?._id === user?._id?.toHexString();
 			expect(res.status).toBe(200);
 			expect(isValid).toBe(true);
@@ -281,12 +282,12 @@ describe("Route /api/users", () => {
 	 */
 
 	describe("PUT /reset/:id", () => {
-		let user1: Omit<UserInt, "password">;
-		let updateUser8Password: UpdatePasswordInt;
+		let user1: Omit<User, "password">;
+		let updateUser8Password: UpdatePassword;
 		let token: string;
 		let id: string;
 
-		afterEach(async () => await User.deleteMany({}));
+		afterEach(async () => await model.User.deleteMany({}));
 		beforeEach(async () => {
 			user1 = {
 				name: "User1",
@@ -297,8 +298,8 @@ describe("Route /api/users", () => {
 				currentPassword: "12345678",
 				newPassword: "87654321",
 			};
-			token = generateAuthToken(new User());
-			const { _id } = await User.create(user1);
+			token = helpers.generateAuthToken(new model.User());
+			const { _id } = await model.User.create(user1);
 			id = _id!.toHexString();
 		});
 
@@ -338,8 +339,11 @@ describe("Route /api/users", () => {
 
 		it("should update user password if valid", async () => {
 			const res = await exec();
-			const user = await User.findOne({ name: user1.name, email: user1.email });
-			const isValid = await validateHash(
+			const user = await model.User.findOne({
+				name: user1.name,
+				email: user1.email,
+			});
+			const isValid = await helpers.validateHash(
 				updateUser8Password.newPassword,
 				user?.hash as string
 			);
@@ -362,11 +366,11 @@ describe("Route /api/users", () => {
 		let token: string;
 		let id: string;
 
-		afterEach(async () => await User.deleteMany({}));
+		afterEach(async () => await model.User.deleteMany({}));
 		beforeEach(async () => {
-			const { _id } = await User.create(user3);
+			const { _id } = await model.User.create(user3);
 			id = _id!.toHexString();
-			token = generateAuthToken(new User(user3));
+			token = helpers.generateAuthToken(new model.User(user3));
 		});
 
 		const exec = () =>
@@ -380,7 +384,7 @@ describe("Route /api/users", () => {
 		});
 
 		it("should return 403 if user is not admin", async () => {
-			token = generateAuthToken(new User());
+			token = helpers.generateAuthToken(new model.User());
 			const res = await exec();
 			expect(res.status).toBe(403);
 			expect(res.body).toMatch(/access denied/i);
@@ -395,7 +399,7 @@ describe("Route /api/users", () => {
 
 		it("should delete user if valid", async () => {
 			const res = await exec();
-			const user = await User.findById(res.body._id);
+			const user = await model.User.findById(res.body._id);
 			expect(user).toBeNull();
 		});
 

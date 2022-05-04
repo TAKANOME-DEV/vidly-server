@@ -1,17 +1,17 @@
 import supertest from "supertest";
-import { verifyToken } from "../../../helpers/auth";
-import { UserInt } from "../../../interfaces/UserInt";
-import { User } from "../../../models/user";
+import helpers from "../../../helpers/auth";
+import model from "../../../models/user";
 import { app } from "../../../server";
+import { User } from "../../../types";
 
 const request = supertest(app);
 
 describe("ROUTE /api/auth", () => {
-	let user: UserInt;
+	let user: User;
 
-	afterEach(async () => await User.deleteMany({}));
+	afterEach(async () => await model.User.deleteMany({}));
 	beforeEach(async () => {
-		await User.create({
+		await model.User.create({
 			name: "User1",
 			email: "user1@gmail.com",
 			hash: "$2a$10$bHBjONSBdNxaBzrcDXVweuihdtbRi8xyJihBOYPM9u6J1oCjv5rBe",
@@ -49,7 +49,7 @@ describe("ROUTE /api/auth", () => {
 
 	it("should return jwt if user is info is correct", async () => {
 		const res = await exec();
-		const isValid = verifyToken(res.body as string);
+		const isValid = helpers.verifyToken(res.body as string);
 		expect(res.status).toBe(200);
 		expect(isValid).toBeTruthy();
 	});

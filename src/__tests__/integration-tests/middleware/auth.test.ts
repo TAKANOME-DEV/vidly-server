@@ -1,7 +1,7 @@
 import supertest from "supertest";
-import { generateAuthToken } from "../../../helpers/auth";
-import { Genre } from "../../../models/genre";
-import { User } from "../../../models/user";
+import helpers from "../../../helpers/auth";
+import genreModel from "../../../models/genre";
+import userModel from "../../../models/user";
 import { app } from "../../../server";
 
 const request = supertest(app);
@@ -11,13 +11,13 @@ describe("Auth Middleware", () => {
 	let name: string;
 	let id: string;
 
-	afterEach(async () => await Genre.deleteMany({}));
+	afterEach(async () => await genreModel.Genre.deleteMany({}));
 	beforeEach(async () => {
-		token = generateAuthToken(new User({ isAdmin: true }));
+		token = helpers.generateAuthToken(new userModel.User({ isAdmin: true }));
 		name = "Test New Genre";
-		const { _id } = await Genre.create({ name });
+		const { _id } = await genreModel.Genre.create({ name });
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		id = _id!.toHexString();
+		id = _id.toHexString();
 	});
 
 	describe("Require Auth", () => {
@@ -32,7 +32,7 @@ describe("Auth Middleware", () => {
 		});
 
 		it("should return 403 if user is not admin", async () => {
-			token = generateAuthToken(new User());
+			token = helpers.generateAuthToken(new userModel.User());
 			const res = await exec();
 			expect(res.status).toBe(403);
 			expect(res.body).toMatch(/access denied/i);
@@ -57,7 +57,7 @@ describe("Auth Middleware", () => {
 			request.delete(`/api/genres/${id}`).set("X-Auth-Token", token);
 
 		it("should return 403 if user is not admin", async () => {
-			token = generateAuthToken(new User());
+			token = helpers.generateAuthToken(new userModel.User());
 			const res = await exec();
 			expect(res.status).toBe(403);
 			expect(res.body).toMatch(/access denied/i);
@@ -66,7 +66,7 @@ describe("Auth Middleware", () => {
 		it("should return null if genre is deleted", async () => {
 			const res = await exec();
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			const genre = await Genre.findById(res.body._id);
+			const genre = await genreModel.Genre.findById(res.body._id);
 			expect(genre).toBeNull();
 		});
 	});

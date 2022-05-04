@@ -1,26 +1,26 @@
 import supertest from "supertest";
-import { generateAuthToken } from "../../../helpers/auth";
-import { FeedbackInt } from "../../../interfaces/FeedbackInt";
-import { Feedback } from "../../../models/feedback";
-import { User } from "../../../models/user";
+import helpers from "../../../helpers/auth";
+import feedModel from "../../../models/feedback";
+import userModel from "../../../models/user";
 import { app } from "../../../server";
+import { Feedback } from "../../../types";
 
 const request = supertest(app);
 
 describe("Route /api/feedbacks", () => {
 	let token: string;
-	let feedback1: FeedbackInt;
-	let feedback2: FeedbackInt;
+	let feedback1: Feedback;
+	let feedback2: Feedback;
 
-	afterEach(async () => await Feedback.deleteMany({}));
+	afterEach(async () => await feedModel.Feedback.deleteMany({}));
 	beforeEach(async () => {
 		feedback1 = { subject: "UI", message: "Looking good!" };
 		feedback2 = {
 			subject: "Errors",
 			message: "Nice tooltip and transition when displaying error messages:)",
 		};
-		await Feedback.create(feedback1, feedback2);
-		token = generateAuthToken(new User());
+		await feedModel.Feedback.create(feedback1, feedback2);
+		token = helpers.generateAuthToken(new userModel.User());
 	});
 
 	/**
@@ -41,7 +41,7 @@ describe("Route /api/feedbacks", () => {
 		});
 
 		it("should return all the feedbacks", async () => {
-			token = generateAuthToken(new User({ isAdmin: true }));
+			token = helpers.generateAuthToken(new userModel.User({ isAdmin: true }));
 			const res = await exec();
 			expect(res.status).toBe(200);
 			expect(res.body).toHaveLength(2);

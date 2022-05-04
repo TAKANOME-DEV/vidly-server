@@ -1,8 +1,8 @@
 import Joi from "joi";
 import { model, Schema } from "mongoose";
-import { RentalInt, RentalReqInt } from "../interfaces/RentalInt";
+import * as types from "../types";
 
-const rentalSchema = new Schema<RentalInt>({
+const rentalSchema = new Schema<types.Rental>({
 	user: {
 		type: new Schema({
 			name: {
@@ -37,9 +37,9 @@ const rentalSchema = new Schema<RentalInt>({
 	},
 });
 
-export const Rental = model("Rental", rentalSchema);
+const Rental = model("Rental", rentalSchema);
 
-export const validateRental = (rental: RentalReqInt) => {
+const validateRental = (rental: types.RentalRequest) => {
 	const schema = Joi.object({
 		returnedDate: Joi.date().required(),
 		movieId: Joi.string()
@@ -52,4 +52,9 @@ export const validateRental = (rental: RentalReqInt) => {
 	});
 
 	return schema.validate(rental);
+};
+
+export default {
+	Rental,
+	validateRental,
 };
