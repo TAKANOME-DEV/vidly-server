@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
-import { FavoriteInt } from "../interfaces/FavoriteInt";
+import * as types from "../types";
 
-export const Favorite = model<FavoriteInt>(
+const Favorite = model<types.Favorite>(
 	"Favorite",
-	new Schema<FavoriteInt>({
+	new Schema<types.Favorite>({
 		user: {
 			type: new Schema({
 				name: {
@@ -28,3 +28,7 @@ export const Favorite = model<FavoriteInt>(
 		},
 	})
 );
+
+export default {
+	Favorite,
+};

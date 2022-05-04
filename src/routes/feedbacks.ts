@@ -1,14 +1,15 @@
 import express from "express";
-import {
-	handleGetFeedbacks,
-	handlePostFeedback,
-} from "../controllers/feedbacks";
-import { requireAdmin } from "../middleware/auth";
-import { validateRequest } from "../middleware/validateRequest";
-import { validateFeedback } from "../models/feedback";
+import controller from "../controllers/feedbacks";
+import auth from "../middleware/auth";
+import validation from "../middleware/validation";
+import model from "../models/feedback";
 
 const router = express.Router();
-router.get("/", requireAdmin, handleGetFeedbacks);
-router.post("/", validateRequest(validateFeedback), handlePostFeedback);
+router.get("/", auth.requireAdmin, controller.getFeedbacks);
+router.post(
+	"/",
+	validation.validateRequest(model.validateFeedback),
+	controller.postFeedback
+);
 
 export { router as feedbacks };

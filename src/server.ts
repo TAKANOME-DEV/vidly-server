@@ -7,16 +7,12 @@ import { connectDB } from "./db/db";
 import { logger } from "./helpers/logger";
 import { errorHandler } from "./middleware/error";
 import { auth } from "./routes/auth";
-import { bookmarks } from "./routes/bookmarks";
-import { favorites } from "./routes/favorites";
 import { feedbacks } from "./routes/feedbacks";
 import { genres } from "./routes/genres";
 import { movies } from "./routes/movies";
-import { payment } from "./routes/payment";
 import { profile } from "./routes/profile";
-import { rentals } from "./routes/rentals";
+import { search } from "./routes/search";
 import { users } from "./routes/users";
-import { webhook } from "./routes/webhook";
 
 export const app = express();
 
@@ -34,7 +30,6 @@ export const corsOptions: CorsOptions = {
 		if (isAllowList) {
 			callback(null, true);
 		} else {
-			console.log({ origin });
 			callback(new Error("Not allowed by CORS"));
 		}
 	},
@@ -49,7 +44,6 @@ export const corsOptions: CorsOptions = {
 
 app.use(helmet());
 app.use(compression());
-app.use("/api/webhook", cors(), webhook);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api/auth", auth);
@@ -57,11 +51,8 @@ app.use("/api/users", users);
 app.use("/api/profile", profile);
 app.use("/api/movies", movies);
 app.use("/api/genres", genres);
-app.use("/api/rentals", rentals);
+app.use("/api/search", search);
 app.use("/api/feedbacks", feedbacks);
-app.use("/api/favorites", favorites);
-app.use("/api/bookmarks", bookmarks);
-app.use("/api/payment", payment);
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {

@@ -1,64 +1,67 @@
-// import { Genre } from "../models/genre";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Request, Response } from "express";
-// import { Params } from "../types/ParamsType";
-// import { MovieType } from "../types/MovieType";
+import { http } from "../db/http";
 import { asyncMiddleware } from "../middleware/async";
-import { Movie } from "../models/movie";
+import * as types from "../types";
 
-export const handleGetMovies = asyncMiddleware(
-	async (req: Request, res: Response) => {
-		const movies = await Movie.find().sort("title");
-		return res.json(movies);
+const getMovies = asyncMiddleware(
+	async (req: Request<types.RequestParams>, res: Response) => {
+		const result = await http.get<types.MoviesResponse>(
+			`/movie/now_playing?page=${+req.params.page}`
+		);
+		return res.json(result.data);
 	}
 );
 
-export const handleGetMovie = asyncMiddleware(
-	async (req: Request, res: Response) => {
-		const movie = await Movie.findById(req.params.id);
-		if (!movie) return res.status(404).json("Movie not found");
-		return res.json(movie);
+const getPopularMovies = asyncMiddleware(
+	async (req: Request<types.RequestParams>, res: Response) => {
+		const result = await http.get<types.MoviesResponse>(
+			`/movie/popular?page=${+req.params.page}`
+		);
+		return res.json(result.data);
 	}
 );
 
-// export const handleCreateMovie = asyncMiddleware(
-// 	async (req: Request<unknown, unknown, MovieType>, res: Response) => {
-// 		const { title, genreId, numberInStock, dailyRentalRate } = req.body;
-// 		const genre = await Genre.findById(genreId);
-// 		if (!genre) return res.status(404).json("Genre Not Found");
-// 		const movie = await Movie.create({
-// 			title,
-// 			genres: [{ _id: genre._id, name: genre.name }],
-// 			numberInStock,
-// 			dailyRentalRate,
-// 		});
-// 		return res.json(movie);
-// 	}
-// );
+const getTrendingMovies = asyncMiddleware(
+	async (req: Request<types.RequestParams>, res: Response) => {
+		const result = await http.get<types.MoviesResponse>(
+			`/trending/movie/day?page=${+req.params.page}`
+		);
+		return res.json(result.data);
+	}
+);
 
-// export const handleUpdateMovie = asyncMiddleware(
-// 	async (req: Request<Params, unknown, MovieType>, res: Response) => {
-// 		const { title, genreId, numberInStock, dailyRentalRate } = req.body;
-// 		const genre = await Genre.findById(genreId);
-// 		if (!genre) return res.status(400).json("Invalid Genre");
-// 		const movie = await Movie.findByIdAndUpdate(
-// 			req.params.id,
-// 			{
-// 				title,
-// 				genre: [{ _id: genre._id, name: genre.name }],
-// 				numberInStock,
-// 				dailyRentalRate,
-// 			},
-// 			{ new: true }
-// 		);
-// 		if (!movie) return res.status(404).json("Movie Not Found");
-// 		return res.json(movie);
-// 	}
-// );
+const getSimilarMovies = asyncMiddleware(
+	async (req: Request<types.RequestParams>, res: Response) => {
+		const result = await http.get<types.MoviesResponse>(
+			`/movie/${+req.params.id}/similar`
+		);
+		return res.json(result.data);
+	}
+);
 
-// export const handleDeleteMovie = asyncMiddleware(
-// 	async (req: Request, res: Response) => {
-// 		const movie = await Movie.findByIdAndRemove(req.params.id);
-// 		if (!movie) return res.status(404).json("Movie Not Found");
-// 		return res.json(movie);
-// 	}
-// );
+const getMovieVideos = asyncMiddleware(
+	async (req: Request<types.RequestParams>, res: Response) => {
+		const result = await http.get<types.MoviesResponse>(
+			`/movie/${+req.params.id}/videos`
+		);
+		return res.json(result.data);
+	}
+);
+
+const getMovieById = asyncMiddleware(
+	async (req: Request<types.RequestParams>, res: Response) => {
+		console.log("Get movie by id", +req.params.id);
+		const result = await http.get<types.Movies>(`/movie/${+req.params.id}`);
+		return res.json(result.data);
+	}
+);
+
+export default {
+	getMovieById,
+	getMovies,
+	getTrendingMovies,
+	getPopularMovies,
+	getSimilarMovies,
+	getMovieVideos,
+};

@@ -1,10 +1,10 @@
 import Joi from "joi";
 import { model, Schema } from "mongoose";
-import { FeedbackInt } from "../interfaces/FeedbackInt";
+import * as types from "../types";
 
-export const Feedback = model<FeedbackInt>(
+const Feedback = model<types.Feedback>(
 	"Feedback",
-	new Schema<FeedbackInt>({
+	new Schema<types.Feedback>({
 		subject: {
 			type: String,
 			trim: true,
@@ -28,11 +28,16 @@ export const Feedback = model<FeedbackInt>(
 	})
 );
 
-export const validateFeedback = (feedback: FeedbackInt) => {
+const validateFeedback = (feedback: types.Feedback) => {
 	const schema = Joi.object({
 		subject: Joi.string().trim().max(300).required(),
 		message: Joi.string().trim().max(500).required(),
 	});
 
 	return schema.validate(feedback);
+};
+
+export default {
+	Feedback,
+	validateFeedback,
 };

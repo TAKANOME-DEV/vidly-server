@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
-import { PaymentInt } from "../interfaces/PaymentInt";
+import * as types from "../types";
 
-export const Payment = model<PaymentInt>(
+const Payment = model<types.Payment>(
 	"Payment",
-	new Schema<PaymentInt>({
+	new Schema<types.Payment>({
 		paymentId: {
 			type: String,
 			required: true,
@@ -34,3 +34,7 @@ export const Payment = model<PaymentInt>(
 		},
 	})
 );
+
+export default {
+	Payment,
+};
