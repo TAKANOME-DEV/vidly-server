@@ -5,12 +5,11 @@ import dotenv from "dotenv";
 import { Request } from "express";
 import jwt from "jsonwebtoken";
 import path from "path";
-import { JwtPayloadInt } from "../interfaces/JwtPayloadInt";
-import { UserInt } from "../interfaces/UserInt";
+import * as types from "../types";
 
 dotenv.config();
 
-export const generateAuthToken = (user: UserInt) => {
+const generateAuthToken = (user: types.User) => {
 	const token = jwt.sign(
 		{
 			_id: user._id,
@@ -24,18 +23,20 @@ export const generateAuthToken = (user: UserInt) => {
 	return token;
 };
 
-export const getToken = (req: Request) => req.header("X-Auth-Token");
+const getToken = (req: Request) => req.header("X-Auth-Token");
 
-export const verifyToken = (token: string): string | JwtPayloadInt =>
-	jwt.verify(token, process.env.JWT_PRIVATE_KEY!);
+const verifyToken = (token: string): string | types.JwtPayload => {
+	return jwt.verify(token, process.env.JWT_PRIVATE_KEY!);
+};
 
-export const generateHash = async (password: string) => {
+const generateHash = async (password: string) => {
 	const salt = await bcrypt.genSalt(10);
 	return await bcrypt.hash(password, salt);
 };
 
-export const validateHash = async (password: string, hash: string) =>
-	await bcrypt.compare(password, hash);
+const validateHash = async (password: string, hash: string) => {
+	return await bcrypt.compare(password, hash);
+};
 
 const dUri = new DataURIParser();
 
@@ -46,8 +47,18 @@ const dUri = new DataURIParser();
  * @see {@link https://medium.com/@joeokpus/uploading-images-to-cloudinary-using-multer-and-expressjs-f0b9a4e14c54}
  */
 
-export const dataUri = (req: Request) =>
-	dUri.format(
+const dataUri = (req: Request) => {
+	return dUri.format(
 		path.extname(req.file!.originalname).toString(),
 		req.file!.buffer
 	);
+};
+
+export default {
+	generateAuthToken,
+	getToken,
+	verifyToken,
+	generateHash,
+	validateHash,
+	dataUri,
+};
