@@ -17,16 +17,12 @@ module.exports = {
 				.collection("genres")
 				.findOne({ name: movieInDb.genre.name });
 
-			if (genreInDb) {
-				await db.collection("movies").findOneAndUpdate(
+			await (genreInDb ? db.collection("movies").findOneAndUpdate(
 					{ _id: insertedId },
 					{
 						$set: { genre: { _id: genreInDb._id, name: genreInDb.name } },
 					}
-				);
-			} else {
-				await db.collection("genres").insertOne(movieInDb.genre);
-			}
+				) : db.collection("genres").insertOne(movieInDb.genre));
 		}
 		console.log(`✅ ${movies.length} Movies Inserted`);
 	},
