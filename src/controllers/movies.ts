@@ -51,7 +51,7 @@ const getMovieVideos = asyncMiddleware(
 
 const getMovieById = asyncMiddleware(
 	async (req: Request<types.RequestParams>, res: Response) => {
-		console.log("Get movie by id", +req.params.id);
+		
 		const result = await http.get<types.Movies>(`/movie/${+req.params.id}`);
 		return res.json(result.data);
 	}
