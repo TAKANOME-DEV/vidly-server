@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM node:16.14-alpine3.15 AS build-stage
+FROM node:16.15-alpine3.15 AS build-stage
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production
-FROM node:16.14-alpine3.15
+FROM node:16.15-alpine3.15
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
