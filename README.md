@@ -1,4 +1,5 @@
-# Vidly API
+<h1 align="center">Vidly API ⚡</h1>
+<p align="center"><a href="https://github.com/TAKANOME-DEV/vidly-server"><img alt="Licence Badge" src="https://img.shields.io/github/license/TAKANOME-DEV/vidly-server?color=%2330C151"></a><a href="https://github.com/TAKANOME-DEV/vidly-server"><img alt="GitHub Actions status" src="https://github.com/TAKANOME-DEV/vidly-server/actions/workflows/codeql-analysis.yml/badge.svg"></a></p>
 
 An Express REST API for [takanome-vidly.netlify.app](https://takanome-vidly.netlify.app/).
 See [vidly-client](https://github.com/aTmb405/breads-client) for front end code and more details about the project.
