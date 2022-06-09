@@ -38,10 +38,10 @@
     "winston-mongodb": "5.0.7"
   },
   "devDependencies": {
-    "@babel/core": "7.16.7",
-    "@babel/plugin-transform-runtime": "7.16.8",
-    "@babel/preset-env": "7.16.7",
-    "@babel/preset-typescript": "7.16.7",
+    "@babel/core": "7.18.2",
+    "@babel/plugin-transform-runtime": "7.18.2",
+    "@babel/preset-env": "7.18.2",
+    "@babel/preset-typescript": "7.17.12",
     "@types/bcryptjs": "2.4.2",
     "@types/compression": "1.7.2",
     "@types/cors": "2.8.12",
