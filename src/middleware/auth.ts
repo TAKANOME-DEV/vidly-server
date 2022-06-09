@@ -41,7 +41,11 @@ const upload = multer({
   },
 }).single("image");
 
-const validateImage = (req: Request, res: Response, next: NextFunction) => {
+const validateImage = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   upload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
       return res.status(400).json(err);
