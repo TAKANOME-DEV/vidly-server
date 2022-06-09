@@ -10,32 +10,32 @@ import * as types from "../types";
 dotenv.config();
 
 const generateAuthToken = (user: types.User) => {
-	const token = jwt.sign(
-		{
-			_id: user._id,
-			name: user.name,
-			email: user.email,
-			isAdmin: user.isAdmin,
-			imageUrl: user.imageUrl,
-		},
-		process.env.JWT_PRIVATE_KEY as string
-	);
-	return token;
+  const token = jwt.sign(
+    {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      imageUrl: user.imageUrl,
+    },
+    process.env.JWT_PRIVATE_KEY as string
+  );
+  return token;
 };
 
 const getToken = (req: Request) => req.header("X-Auth-Token");
 
 const verifyToken = (token: string): string | types.JwtPayload => {
-	return jwt.verify(token, process.env.JWT_PRIVATE_KEY!);
+  return jwt.verify(token, process.env.JWT_PRIVATE_KEY!);
 };
 
 const generateHash = async (password: string) => {
-	const salt = await bcrypt.genSalt(10);
-	return await bcrypt.hash(password, salt);
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
 };
 
 const validateHash = async (password: string, hash: string) => {
-	return await bcrypt.compare(password, hash);
+  return await bcrypt.compare(password, hash);
 };
 
 const dUri = new DataURIParser();
@@ -48,17 +48,17 @@ const dUri = new DataURIParser();
  */
 
 const dataUri = (req: Request) => {
-	return dUri.format(
-		path.extname(req.file!.originalname).toString(),
-		req.file!.buffer
-	);
+  return dUri.format(
+    path.extname(req.file!.originalname).toString(),
+    req.file!.buffer
+  );
 };
 
 export default {
-	generateAuthToken,
-	getToken,
-	verifyToken,
-	generateHash,
-	validateHash,
-	dataUri,
+  generateAuthToken,
+  getToken,
+  verifyToken,
+  generateHash,
+  validateHash,
+  dataUri,
 };
