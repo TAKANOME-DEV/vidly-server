@@ -7,29 +7,29 @@ import model from "../models/user";
 const router = express.Router();
 router.get("/", auth.requireAdmin, controller.getUsers);
 router.get(
-	"/:id",
-	[validation.validateId, auth.requireAdmin],
-	controller.getUserById
+  "/:id",
+  [validation.validateId, auth.requireAdmin],
+  controller.getUserById
 );
 router.post(
-	"/",
-	validation.validateRequest(model.validateUser),
-	controller.createUser
+  "/",
+  validation.validateRequest(model.validateUser),
+  controller.createUser
 );
 router.put(
-	"/:id",
-	[validation.validateId, auth.requireAuth],
-	controller.updateUser
+  "/:id",
+  [validation.validateId, auth.requireAuth],
+  controller.updateUser
 );
 router.put(
-	"/reset/:id",
-	[validation.validateId, auth.requireAuth],
-	controller.updatePassword
+  "/reset/:id",
+  [validation.validateId, auth.requireAuth],
+  controller.updatePassword
 );
 router.delete(
-	"/:id",
-	[validation.validateId, auth.requireAdmin],
-	controller.deleteUser
+  "/:id",
+  [validation.validateId, auth.requireAdmin],
+  controller.deleteUser
 );
 
 export { router as users };

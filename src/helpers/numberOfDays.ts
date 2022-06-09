@@ -6,7 +6,7 @@
  */
 
 export const numberOfDays = (returnedDate: Date, rentDate: Date) => {
-	const day = 24 * 60 * 60 * 1000;
-	const daysDiff = +returnedDate - +rentDate;
-	return Math.ceil(daysDiff / day);
+  const day = 24 * 60 * 60 * 1000;
+  const daysDiff = +returnedDate - +rentDate;
+  return Math.ceil(daysDiff / day);
 };
