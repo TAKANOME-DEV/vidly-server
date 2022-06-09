@@ -33,7 +33,7 @@ specifiers:
   migrate-mongo: 8.2.3
   mongoose: 6.1.6
   multer: 1.4.4
-  nodemon: 2.0.15
+  nodemon: 2.0.16
   stripe: 8.207.0
   supertest: 6.1.6
   ts-node: 10.4.0
@@ -80,7 +80,7 @@ devDependencies:
   babel-jest: 27.4.6_@babel+core@7.16.7
   eslint: 8.6.0
   jest: 27.4.7_ts-node@10.4.0
-  nodemon: 2.0.15
+  nodemon: 2.0.16
   supertest: 6.1.6
   ts-node: 10.4.0_7lyb4hk2ia3svgaicurnzl6bqy
   tslib: 2.3.1
@@ -2674,7 +2674,7 @@ packages:
     dev: false
 
   /concat-map/0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
   /concat-stream/1.6.2:
@@ -4508,7 +4508,7 @@ packages:
     dev: true
 
   /json-buffer/3.0.0:
-    resolution: {integrity: sha1-Wx85evx11ne96Lz8Dkfh+aPZqJg=}
+    resolution: {integrity: sha512-CuUqjv0FUZIdXkHPI8MezCnFCdaTAacej1TZYulLoAg1h/PhwkdXFN4V/gzY4g+fMBCOV2xF+rp7t2XD2ns/NQ==}
     dev: true
 
   /json-parse-even-better-errors/2.3.1:
@@ -4970,8 +4970,8 @@ packages:
     resolution: {integrity: sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==}
     dev: true
 
-  /nodemon/2.0.15:
-    resolution: {integrity: sha512-gdHMNx47Gw7b3kWxJV64NI+Q5nfl0y5DgDbiVtShiwa7Z0IZ07Ll4RLFo6AjrhzMtoEZn5PDE3/c2AbVsiCkpA==}
+  /nodemon/2.0.16:
+    resolution: {integrity: sha512-zsrcaOfTWRuUzBn3P44RDliLlp263Z/76FPoHFr3cFFkOz0lTPAcIw8dCzfdVIx/t3AtDYCZRCDkoCojJqaG3w==}
     engines: {node: '>=8.10.0'}
     hasBin: true
     requiresBuild: true
