@@ -7,9 +7,9 @@ import model from "../models/feedback";
 const router = express.Router();
 router.get("/", auth.requireAdmin, controller.getFeedbacks);
 router.post(
-	"/",
-	validation.validateRequest(model.validateFeedback),
-	controller.postFeedback
+  "/",
+  validation.validateRequest(model.validateFeedback),
+  controller.postFeedback
 );
 
 export { router as feedbacks };

@@ -20,26 +20,26 @@ dotenv.config();
 void connectDB();
 
 const allowList = [
-	process.env.CLIENT_ENDPOINT,
-	process.env.CLIENT_ENDPOINT_PROD,
+  process.env.CLIENT_ENDPOINT,
+  process.env.CLIENT_ENDPOINT_PROD,
 ];
 
 export const corsOptions: CorsOptions = {
-	origin: (origin, callback) => {
-		const isAllowList = allowList.indexOf(origin) !== -1;
-		if (isAllowList) {
-			callback(null, true);
-		} else {
-			callback(new Error("Not allowed by CORS"));
-		}
-	},
-	allowedHeaders: [
-		"Content-Type",
-		"Content-Length",
-		"sentry-trace",
-		"X-Auth-Token",
-		"X-User-Id",
-	],
+  origin: (origin, callback) => {
+    const isAllowList = allowList.indexOf(origin) !== -1;
+    if (isAllowList) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  allowedHeaders: [
+    "Content-Type",
+    "Content-Length",
+    "sentry-trace",
+    "X-Auth-Token",
+    "X-User-Id",
+  ],
 };
 
 app.use(helmet());
@@ -56,11 +56,11 @@ app.use("/api/feedbacks", feedbacks);
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
-	app.listen(process.env.PORT, () =>
-		logger.info(
-			`Server is listening in ${process.env.NODE_ENV as string} mode on port ${
-				process.env.PORT as string
-			}`
-		)
-	);
+  app.listen(process.env.PORT, () =>
+    logger.info(
+      `Server is listening in ${process.env.NODE_ENV as string} mode on port ${
+        process.env.PORT as string
+      }`
+    )
+  );
 }
