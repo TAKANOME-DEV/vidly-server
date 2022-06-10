@@ -26,7 +26,7 @@ specifiers:
   dotenv: 10.0.0
   eslint: 8.6.0
   express: 4.17.2
-  helmet: 5.0.1
+  helmet: 5.1.0
   jest: 27.4.7
   joi: 17.5.0
   jsonwebtoken: 8.5.1
@@ -51,7 +51,7 @@ dependencies:
   datauri: 4.1.0
   dotenv: 10.0.0
   express: 4.17.2
-  helmet: 5.0.1
+  helmet: 5.1.0
   joi: 17.5.0
   jsonwebtoken: 8.5.1
   migrate-mongo: 8.2.3
@@ -3653,8 +3653,8 @@ packages:
     dependencies:
       function-bind: 1.1.1
 
-  /helmet/5.0.1:
-    resolution: {integrity: sha512-iyYpGYH2nbQVaQtauYDnemWg45S2RyGvJ+iKj+V9jp7Dc1NTtAJHmD+hFOSYS7Xdwe1GeyVEYSydggXLOg6TKQ==}
+  /helmet/5.1.0:
+    resolution: {integrity: sha512-klsunXs8rgNSZoaUrNeuCiWUxyc+wzucnEnFejUg3/A+CaF589k9qepLZZ1Jehnzig7YbD4hEuscGXuBY3fq+g==}
     engines: {node: '>=12.0.0'}
     dev: false
 
