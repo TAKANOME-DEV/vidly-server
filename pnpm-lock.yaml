@@ -28,7 +28,7 @@ specifiers:
   express: 4.17.2
   helmet: 5.0.1
   jest: 27.4.7
-  joi: 17.5.0
+  joi: 17.6.0
   jsonwebtoken: 8.5.1
   migrate-mongo: 8.2.3
   mongoose: 6.1.6
@@ -52,7 +52,7 @@ dependencies:
   dotenv: 10.0.0
   express: 4.17.2
   helmet: 5.0.1
-  joi: 17.5.0
+  joi: 17.6.0
   jsonwebtoken: 8.5.1
   migrate-mongo: 8.2.3
   mongoose: 6.1.6
@@ -4425,8 +4425,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /joi/17.5.0:
-    resolution: {integrity: sha512-R7hR50COp7StzLnDi4ywOXHrBrgNXuUUfJWIR5lPY5Bm/pOD3jZaTwpluUXVLRWcoWZxkrHBBJ5hLxgnlehbdw==}
+  /joi/17.6.0:
+    resolution: {integrity: sha512-OX5dG6DTbcr/kbMFj0KGYxuew69HPcAE3K/sZpEV2nP6e/j/C0HV+HNiBPCASxdx5T7DMoa0s8UeHWMnb6n2zw==}
     dependencies:
       '@hapi/hoek': 9.3.0
       '@hapi/topo': 5.1.0
